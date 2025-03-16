@@ -18,7 +18,6 @@ import 'pharmacies/providers/pharmacies_laravel_provider.dart';
 
 //ahmed naji
 Future<void> initServices() async {
-
   Get.log('starting services ...');
   await GetStorage.init();
   await Get.putAsync(() => GlobalService().init());
@@ -41,7 +40,6 @@ void main() async {
     GetMaterialApp(
       title: Get.find<SettingsService>().setting.value.appName ?? '',
       initialRoute: Theme1AppPages.INITIAL,
-
       onReady: () async {
         await Get.putAsync(() => FireBaseMessagingService().init());
       },
@@ -63,15 +61,16 @@ void main() async {
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    if (Platform.isAndroid) {
-      return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-    }
-
-    return super.createHttpClient(context)
-      ..findProxy = (uri) {
-        return "PROXY 192.168.1.7:8083";
-      }
+    // Create a standard HTTP client that ignores certificate errors
+    final httpClient = super.createHttpClient(context)
       ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    
+    // Only set proxy for development on specific platforms if needed
+    if (!Platform.isAndroid && Platform.isIOS && false) { // Set to true only if proxy is needed
+      return httpClient..findProxy = (uri) => "PROXY 192.168.1.7:8083";
+    }
+    
+    return httpClient;
   }
 }
 
