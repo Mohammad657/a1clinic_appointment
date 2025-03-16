@@ -1,1 +1,0 @@
- /Users/mohammad/Desktop/a1clinic_appointment/.dart_tool/flutter_build/5881233e805f0b7239c1880c70efb526/native_assets.json: 
